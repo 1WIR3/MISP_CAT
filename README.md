@@ -567,4 +567,48 @@ Save this as `run_analysis.py` and execute with:
 python run_analysis.py
 ```
 
-This guide provides everything needed to set up, configure, and effectively use the MISP Correlation Analysis Toolkit for threat intelligence analysis.
+# Running Unit Tests for `MISPCorrelationAnalyzer`
+
+This guide explains how to run the unit tests for the `MISPCorrelationAnalyzer` class.
+
+## Prerequisites
+1. **Python Environment**: Ensure you have Python 3.7 or later installed.
+2. **Dependencies**: Install the required libraries by running:
+pip install pandas networkx matplotlib seaborn
+
+## Setting Up the Test Suite
+1. Save the test suite provided earlier in a file named `test_misp_correlation_analyzer.py` in the same directory as `misp_correlation_analysis.py`.
+2. Ensure the directory structure looks like this:
+. ├── misp_correlation_analysis.py ├── test_misp_correlation_analyzer.py
+
+## Running the Tests
+
+### Using `unittest`
+Run the tests using Python's built-in `unittest` module:
+python -m unittest test_misp_correlation_analyzer.py
+
+### Using `pytest` (Optional)
+If you prefer `pytest`, install it first:
+pip install pytest
+
+Then, run the tests with:
+pytest test_misp_correlation_analyzer.py
+
+## Expected Output
+If all tests pass, you should see output similar to the following:
+
+### `unittest` Output
+Ran 9 tests in 0.123s
+OK
+============================= test session starts ============================== collected 9 items
+test_misp_correlation_analyzer.py .........                             [100%]
+============================== 9 passed in 0.12s ===============================
+
+
+## Notes
+- If any test fails, the output will include details about the failed test(s), including the error message and traceback.
+- Ensure that the `misp_correlation_analysis.py` file is free of syntax errors before running the tests.
+
+## Additional Information
+- For more details on the `MISPCorrelationAnalyzer` class, refer to the comments and docstrings in the `misp_correlation_analysis.py` file.
+- If you encounter issues, ensure that all dependencies are installed and that the test file is in the correct directory.

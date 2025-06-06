@@ -9,7 +9,7 @@ Usage:
     python basic_analysis.py misp_export.json
     python basic_analysis.py misp_export.csv
 
-Author: MISP Correlation Analysis Toolkit
+Author: CastleBravo  --  MISP Correlation Analysis Toolkit
 """
 
 import sys

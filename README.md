@@ -1,4 +1,4 @@
-# MISP Correlation Analysis Toolkit - Complete Guide
+# MISP Correlation Analysis Toolkit -  Guide
 
 ## Table of Contents
 1. [Installation & Setup](#installation--setup)

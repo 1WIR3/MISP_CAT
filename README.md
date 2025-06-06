@@ -30,7 +30,11 @@ source misp-env/bin/activate  # On Windows: misp-env\Scripts\activate
 # Install required packages
 pip install pandas networkx matplotlib seaborn numpy pymisp
 ```
+Alternitatively, requirements.txt can be used to install all packages:
 
+``` pip install -r requirements.txt ```
+
+  
 ### Step 2: Save the Analysis Code
 
 1. Copy the MISP Correlation Analysis Toolkit code into a file named `misp_analyzer.py`

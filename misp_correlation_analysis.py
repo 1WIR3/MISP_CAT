@@ -487,6 +487,109 @@ def demo_misp_formats():
 if __name__ == "__main__":
     # Run demo
     analyzer = demo_analysis()
-    
     # Uncomment to visualize (requires matplotlib)
-    # analyzer.visualize_correlation_network()
+    analyzer.visualize_correlation_network()
+
+
+    import tkinter as tk
+from tkinter import filedialog, messagebox, scrolledtext
+import threading
+
+class MISPAnalyzerGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("MISP Correlation Analyzer")
+        self.analyzer = None
+        self.file_path = None
+
+        # File selection
+        self.file_frame = tk.Frame(root)
+        self.file_frame.pack(fill=tk.X, padx=10, pady=5)
+        self.file_label = tk.Label(self.file_frame, text="No file selected")
+        self.file_label.pack(side=tk.LEFT, expand=True, fill=tk.X)
+        self.browse_btn = tk.Button(self.file_frame, text="Browse...", command=self.browse_file)
+        self.browse_btn.pack(side=tk.RIGHT)
+
+        # Action buttons
+        self.action_frame = tk.Frame(root)
+        self.action_frame.pack(fill=tk.X, padx=10, pady=5)
+        self.analyze_btn = tk.Button(self.action_frame, text="Analyze", command=self.run_analysis, state=tk.DISABLED)
+        self.analyze_btn.pack(side=tk.LEFT, padx=5)
+        self.visualize_btn = tk.Button(self.action_frame, text="Visualize", command=self.visualize, state=tk.DISABLED)
+        self.visualize_btn.pack(side=tk.LEFT, padx=5)
+
+        # Report display
+        self.report_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, height=25, width=100)
+        self.report_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+    def browse_file(self):
+        filetypes = [("MISP Exports", "*.json *.csv"), ("All files", "*.*")]
+        path = filedialog.askopenfilename(title="Select MISP Export File", filetypes=filetypes)
+        if path:
+            self.file_path = path
+            self.file_label.config(text=path)
+            self.analyze_btn.config(state=tk.NORMAL)
+            self.visualize_btn.config(state=tk.DISABLED)
+            self.report_text.delete(1.0, tk.END)
+
+    def run_analysis(self):
+        def analyze():
+            try:
+                self.report_text.delete(1.0, tk.END)
+                self.report_text.insert(tk.END, "Analyzing...\n")
+                self.analyzer = quick_misp_analysis(self.file_path)
+                report = self.analyzer.generate_correlation_report()
+                self.report_text.delete(1.0, tk.END)
+                self.report_text.insert(tk.END, report)
+                self.visualize_btn.config(state=tk.NORMAL)
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to analyze file:\n{e}")
+                self.visualize_btn.config(state=tk.DISABLED)
+        threading.Thread(target=analyze).start()
+
+    def visualize(self):
+        if self.analyzer:
+            try:
+                self.analyzer.visualize_correlation_network()
+            except Exception as e:
+                messagebox.showerror("Error", f"Visualization failed:\n{e}")
+
+def launch_gui():
+    root = tk.Tk()
+    app = MISPAnalyzerGUI(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) == 1:
+        launch_gui()
+    else:
+        # Keep CLI support
+        import argparse
+        parser = argparse.ArgumentParser(
+            description="MISP Correlation Analyzer - Analyze and visualize MISP export data."
+        )
+        parser.add_argument(
+            "filename",
+            nargs="?",
+            help="Path to MISP export file (.json or .csv)"
+        )
+        parser.add_argument(
+            "--visualize", "-v",
+            action="store_true",
+            help="Show correlation network visualization"
+        )
+        args = parser.parse_args()
+
+        if not args.filename:
+            print("No filename provided. Example usage:")
+            print("  python misp_correlation_analysis.py misp_export.json")
+            sys.exit(1)
+
+        try:
+            analyzer = quick_misp_analysis(args.filename)
+            if args.visualize:
+                analyzer.visualize_correlation_network()
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
